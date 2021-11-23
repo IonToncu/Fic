@@ -17,6 +17,7 @@ org 100h
 
 .code
 main proc
+    call HuffmanCodes
    
 
 endp
@@ -34,7 +35,73 @@ createMinHeap:
 swapMinHeapNode:  
     xor ax, ax
 
+    ret  
+
+minHeapify
+    xor ax, ax
+
+    ret  
+
+HuffmanCodes: 
+    xor ax, ax 
+    call buildHuffmanTree
+    call printCodes
+
+    ret 
+    
+buildHuffmanTree:  
+    xor ax, ax
+    call createAndBuildMinHeap 
+    call isSizeOne
+    call extractMin
+    call newNode
+    call insertMinHeap
+    call extractMin
     ret
+
+buildMinHeap
+    xor ax, ax
+
+    ret 
+        
+printCodes:  
+    xor ax, ax
+
+    ret  
+
+createAndBuildMinHeap:  
+    xor ax, ax
+
+    ret 
+
+isSizeOne:
+    xor ax, ax
+
+    ret 
+
+extractMin:  
+    xor ax, ax
+
+    ret 
+
+insertMinHeap:
+    xor ax, ax
+
+    ret 
+
+printArr:
+    xor ax, ax
+
+    ret 
+isLeaf:
+    xor ax, ax
+
+    ret 
+
+
+
+
+
 
 
 

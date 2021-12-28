@@ -11,14 +11,15 @@ org 100h
 ;  MinHeapNode 
     MinHeapNode_char_Data db 100 dup(?)   
     MinHeapNode_unsigned_freq db 100 dup(?) 
-    MinHeapNode_MinHeapNode_left_index db 100 dup(?) 
-    MinHeapNode_MinHeapNode_right_index db 100 dup(?)
+    MinHeapNode_MinHeapNode_left_index dw 100 dup(?) 
+    MinHeapNode_MinHeapNode_right_index dw 100 dup(?)
 ;  MinHeap (or Huffman tree) 
     MinHeap_unsigned_size db 0 
     MinHeap_unsigned_capacity db 100 dup(?) 
     MinHeap_MinHeapNode_array db 100 dup(?)
 ;  HuffmanCodes fun var
     HuffmanCodes_arr db 100 dup(?)
+    HuffmanCodes_top db 0
 ;  buildHuffmanTree fun var
     buildHuffmanTree_left db 0
     buildHuffmanTree_right db 0
@@ -34,10 +35,10 @@ org 100h
     minHeapify_left dw 0
     minHeapify_right dw 0
 
+
 .code
-main proc
-    call HuffmanCodes
-endp
+jmp main 
+
     
 newNode:
     xor ax, ax
@@ -45,10 +46,15 @@ newNode:
     ret
     
 createMinHeap:
-    mov ah, 0
-    mov MinHeap_unsigned_size, ah
-    mov ah, size
-    mov MINHEAP_UNSIGNED_CAPACITY, ah
+    push bp
+    mov bp, sp 
+    and sp, 0xfff0
+    mov dx, [bp + 4]
+    mov MINHEAP_UNSIGNED_CAPACITY, dl
+    mov dx, 0
+    mov MINHEAP_UNSIGNED_SIZE, dl
+    mov sp, bp
+    pop bp
     ret
      
 swapMinHeapNode:  
@@ -80,7 +86,12 @@ MHBR1
 
 HuffmanCodes:  
     call buildHuffmanTree
+    pop bx
+    mov ah, 0
+    mov HUFFMANCODES_TOP, ah
+    push ax
     call printCodes
+    pop bx
 
     ret 
     
@@ -109,7 +120,13 @@ buildMinHeap
     ret 
         
 printCodes:  
-    xor ax, ax
+    push bp
+    mov bp, sp 
+    and sp, 0xfff0
+    mov ax, [bp + 4]
+    mov HUFFMANCODES_TOP, ah
+    
+    mov ah, MINHEAPNODE_MINHEAPNODE_LEFT_INDEX
 
     ret  
 
@@ -153,6 +170,11 @@ isLeaf:
     xor ax, ax
 
     ret 
+
+main proc
+    call HuffmanCodes
+    pop bx
+endp
 
 
 

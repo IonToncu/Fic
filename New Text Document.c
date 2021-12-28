@@ -107,7 +107,7 @@ void minHeapify(struct MinHeap* minHeap, int idx)
  
 // A utility function to check
 // if size of heap is 1 or not
-int isSizeOne(struct MinHeap* minHeap)
+int isSizeOne(struct MinHeap* minHeap) //x
 {
  
     return (minHeap->size == 1);
@@ -115,7 +115,7 @@ int isSizeOne(struct MinHeap* minHeap)
  
 // A standard function to extract
 // minimum value node from heap
-struct MinHeapNode* extractMin(struct MinHeap* minHeap)
+struct MinHeapNode* extractMin(struct MinHeap* minHeap)//x
  
 {
  
@@ -131,7 +131,7 @@ struct MinHeapNode* extractMin(struct MinHeap* minHeap)
 // A utility function to insert
 // a new node to Min Heap
 void insertMinHeap(struct MinHeap* minHeap,
-                   struct MinHeapNode* minHeapNode)
+                   struct MinHeapNode* minHeapNode)//x
  
 {
  
@@ -162,7 +162,7 @@ void buildMinHeap(struct MinHeap* minHeap)
 }
  
 // A utility function to print an array of size n
-void printArr(int arr[], int n)
+void printArr(int arr[], int n)//x
 {
     int i;
     for (i = 0; i < n; ++i)
@@ -172,7 +172,7 @@ void printArr(int arr[], int n)
 }
  
 // Utility function to check if this node is leaf
-int isLeaf(struct MinHeapNode* root)
+int isLeaf(struct MinHeapNode* root)//x
  
 {
  
@@ -201,7 +201,7 @@ struct MinHeap* createAndBuildMinHeap(char data[],
  
 // The main function that builds Huffman tree
 struct MinHeapNode* buildHuffmanTree(char data[],
-                                     int freq[], int size)
+                                     int freq[], int size)//x
  
 {
     struct MinHeapNode *left, *right, *top;

@@ -26,7 +26,9 @@ org 100h
     buildHuffmanTree_top db 0
     buildHuffmanTree_isSizeOne db 0
 ;   createAndBuildMinHeap fun var
-    createAndBuildMinHeap_minHeap db 0
+    createAndBuildMinHeap_left db 0
+    createAndBuildMinHeap_right db 0
+    createAndBuildMinHeap_top db 0
 ;   extractMin fun var
     extractMin_tmp dw 0
 ;   minHeapify fun var
@@ -36,6 +38,11 @@ org 100h
     minHeapify_right dw 0  
 ;   buildMinHeap
     buildMinHeap_n dw 0
+;   newNode fun var
+    newNode_data db '$'
+    newNode_freq db 0
+    newNode_idx dw 0
+
 
 .code 
 jmp main   
@@ -54,7 +61,31 @@ func:
     mov sp, bp
     pop bp
     ret 
-    
+newNode:
+    push bp
+    mov bp, sp 
+    and sp, 0xfff0
+    mov ax, [bp + 8]
+    mov newnode_data, al 
+    mov ax, [bp + 6]
+    mov newnode_freq, al 
+    mov ax, [bp + 4]
+    mov newnode_idx, ax 
+    mov bx, ax
+    mov ax, -1
+    mov minheapnode_minheapnode_left_index[bx], ax
+    mov minheapnode_minheapnode_right_index[bx], ax
+    mov ax, 0
+    mov al, newnode_data
+    mov minheapnode_char_data[bx], al
+    mov al, newnode_freq
+    mov minheapnode_unsigned_freq, al
+
+    mov sp, bp
+    pop bp
+    ret 
+
+
     
 createMinHeap:
     push bp
@@ -79,10 +110,15 @@ createAndBuildMinHeap:
 createAndBuildMinHeap_loop2:    
     cmp ch, cl  
     je createAndBuildMinHeap_loop1 
-    mov dl, ch
-    ;add dl, '0' 
-    ;int 21h
-    inc ch 
+        mov bx, cx
+        mov ax, MINHEAPNODE_CHAR_DATA[bx]
+        push ax
+        mov ax, MINHEAPNODE_UNSIGNED_FREQ[bx]
+        push ax
+        push cx
+        call newNode
+        pop bx
+        inc ch 
     jmp createAndBuildMinHeap_loop2
 createAndBuildMinHeap_loop1:  
     mov ch, size
@@ -93,21 +129,21 @@ createAndBuildMinHeap_loop1:
     
 
 buildMinHeap:
-    mov ax, 10h
+    mov ax, MINHEAP_UNSIGNED_SIZE
+    dec ax
     dec ax
     mov cx, 0x0002 
     div cl 
     mov cx, ax
     mov bx, 0
     cmp cx, bx
-    je  buildMinHeap_loop1 
+    jl  buildMinHeap_loop1 
     push cx
     call minHeapify
     pop bx
     mov bx, 0    
     dec cx
 buildMinHeap_loop1:
-    
     ret     
 
 minHeapify: 
@@ -166,14 +202,40 @@ minheapify_loop2:
     mov bx, minheapify_idx
     cmp ax, bx
     je minheapify_loop3
-        
-          ;todo
+       mov al, MINHEAPIFY_SMALLEST
+       push ax
+       call minHeapify
+       pop bx  
+
 minheapify_loop3:    
     
     mov sp, bp
     pop bp
     ret
     
+extractMin:
+    ret
+
+buildHuffmanTree:
+    call createAndBuildMinHeap
+    pop bx
+    mov ch, 1
+buildHuffmanTree_tag1
+    mov cl, minheap_unsigned_size
+    cmp ch, cl
+    je buildHuffmanTree_loop1
+        call extractMin
+        pop bx
+        mov buildhuffmantree_left, cx
+
+        call extractMin
+        pop bx
+        mov buildhuffmantree_right, cx
+
+        jmp buildHuffmanTree_tag1
+buildHuffmanTree_loop1:
+
+    ret
      
     
 main: proc  

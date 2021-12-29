@@ -51,8 +51,10 @@ func:
     push bp
     mov bp, sp 
     and sp, 0xfff0
-    mov dx, [bp + 6] 
+    mov dx, [bp + 8] 
     mov ah, 2
+    int 21h 
+    mov dx, [bp + 6]   
     int 21h 
     mov dx, [bp + 4]   
     int 21h
@@ -111,9 +113,9 @@ createAndBuildMinHeap_loop2:
     cmp ch, cl  
     je createAndBuildMinHeap_loop1 
         mov bx, cx
-        mov ax, MINHEAPNODE_CHAR_DATA[bx]
+        mov al, MINHEAPNODE_CHAR_DATA[bx]
         push ax
-        mov ax, MINHEAPNODE_UNSIGNED_FREQ[bx]
+        mov al, MINHEAPNODE_UNSIGNED_FREQ[bx]
         push ax
         push cx
         call newNode
@@ -129,7 +131,7 @@ createAndBuildMinHeap_loop1:
     
 
 buildMinHeap:
-    mov ax, MINHEAP_UNSIGNED_SIZE
+    mov al, MINHEAP_UNSIGNED_SIZE
     dec ax
     dec ax
     mov cx, 0x0002 
@@ -202,7 +204,7 @@ minheapify_loop2:
     mov bx, minheapify_idx
     cmp ax, bx
     je minheapify_loop3
-       mov al, MINHEAPIFY_SMALLEST
+       mov ax, MINHEAPIFY_SMALLEST
        push ax
        call minHeapify
        pop bx  
@@ -220,17 +222,17 @@ buildHuffmanTree:
     call createAndBuildMinHeap
     pop bx
     mov ch, 1
-buildHuffmanTree_tag1
+buildHuffmanTree_tag1:
     mov cl, minheap_unsigned_size
     cmp ch, cl
     je buildHuffmanTree_loop1
         call extractMin
         pop bx
-        mov buildhuffmantree_left, cx
+        mov buildhuffmantree_left, ch
 
         call extractMin
         pop bx
-        mov buildhuffmantree_right, cx
+        mov buildhuffmantree_right, ch
 
         jmp buildHuffmanTree_tag1
 buildHuffmanTree_loop1:
@@ -238,9 +240,15 @@ buildHuffmanTree_loop1:
     ret
      
     
-main: proc  
-      
-    call createAndBuildMinHeap
+main: proc 
+     
+    mov ax, 4
+    push ax 
+    mov ax, 7
+    push ax
+    mov ax, 8
+    push ax 
+    call func
     pop bx
 endp
 

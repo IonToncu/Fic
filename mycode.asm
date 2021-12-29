@@ -51,18 +51,17 @@ func:
     push bp
     mov bp, sp 
     and sp, 0xfff0
-    mov dx, [bp + 8] 
+    mov dx, [bp + 8]; primul argument 
     mov ah, 2
     int 21h 
-    mov dx, [bp + 6]   
-    int 21h 
-    mov dx, [bp + 4]   
+    mov dx, [bp + 4];    
     int 21h
     
     
     mov sp, bp
     pop bp
     ret 
+
 newNode:
     push bp
     mov bp, sp 
@@ -113,9 +112,9 @@ createAndBuildMinHeap_loop2:
     cmp ch, cl  
     je createAndBuildMinHeap_loop1 
         mov bx, cx
-        mov al, MINHEAPNODE_CHAR_DATA[bx]
+        mov ax, MINHEAPNODE_CHAR_DATA[bx]
         push ax
-        mov al, MINHEAPNODE_UNSIGNED_FREQ[bx]
+        mov ax, MINHEAPNODE_UNSIGNED_FREQ[bx]
         push ax
         push cx
         call newNode
@@ -131,7 +130,7 @@ createAndBuildMinHeap_loop1:
     
 
 buildMinHeap:
-    mov al, MINHEAP_UNSIGNED_SIZE
+    mov ax, MINHEAP_UNSIGNED_SIZE
     dec ax
     dec ax
     mov cx, 0x0002 
@@ -204,7 +203,7 @@ minheapify_loop2:
     mov bx, minheapify_idx
     cmp ax, bx
     je minheapify_loop3
-       mov ax, MINHEAPIFY_SMALLEST
+       mov al, MINHEAPIFY_SMALLEST
        push ax
        call minHeapify
        pop bx  
@@ -216,23 +215,34 @@ minheapify_loop3:
     ret
     
 extractMin:
+    mov ax, 0
+    mov bh, 0
+    mov bl, minheap_unsigned_size
+    dec bl
+    mov al, minheap_minheapnode_array[bx]
+    mov bx, 0
+    mov minheap_minheapnode_array[bx], al
+
+    mov al, minheap_unsigned_size
+    dec al
+    
     ret
 
 buildHuffmanTree:
     call createAndBuildMinHeap
     pop bx
     mov ch, 1
-buildHuffmanTree_tag1:
+buildHuffmanTree_tag1
     mov cl, minheap_unsigned_size
     cmp ch, cl
     je buildHuffmanTree_loop1
-        call extractMin
+        call extractMin ; rezultatul de la extragere se va salva in registrul cx 
         pop bx
-        mov buildhuffmantree_left, ch
+        mov buildhuffmantree_left, cx
 
         call extractMin
         pop bx
-        mov buildhuffmantree_right, ch
+        mov buildhuffmantree_right, cx
 
         jmp buildHuffmanTree_tag1
 buildHuffmanTree_loop1:
@@ -240,15 +250,9 @@ buildHuffmanTree_loop1:
     ret
      
     
-main: proc 
-     
-    mov ax, 4
-    push ax 
-    mov ax, 7
-    push ax
-    mov ax, 8
-    push ax 
-    call func
+main: proc  
+      
+    call createAndBuildMinHeap
     pop bx
 endp
 
